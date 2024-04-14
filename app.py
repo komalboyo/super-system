@@ -174,9 +174,15 @@ def update_driver():
 
 @app.route('/view_ride_payment_details')
 def view_ride_payment_details():
-    driver_id = session.get('user_id')
+    user_id = session.get('user_id')
+    # Perform a join between the User and Driver tables to retrieve the driver_id
+    driver_id = db.session.query(Driver.DRIVER_ID).join(Users).filter(Users.USER_ID == user_id).scalar()
+    #print(driver_id)
+    #driver_id = session.get('user_id')
+    customer_id = db.session.query(Customer.CUSTOMER_ID).join(Users).filter(Users.USER_ID == user_id).scalar()
     rides = Ride.query.filter_by(DRIVER_ID=driver_id).all()
-    payments = Payment.query.filter_by(CUSTOMER_ID=driver_id).all()
+    print(rides)
+    payments = Payment.query.filter_by(CUSTOMER_ID=customer_id).all()
     return render_template('view_ride_payment_details.html', rides=rides, payments=payments)
 
 
@@ -372,8 +378,8 @@ def view_all_tables():
             SELECT RIDE.RIDE_ID, RIDE.START_LOCATION, RIDE.END_LOCATION, RIDE.FARE, RIDE.DATE_OF_RIDE, RIDE.TIME_OF_RIDE,
                    CUSTOMER.USER_ID AS CUSTOMER_ID, DRIVER.USER_ID AS DRIVER_ID
             FROM RIDE
-            INNER JOIN CUSTOMER ON RIDE.CUSTOMER_ID = CUSTOMER.CUSTOMER_ID
-            INNER JOIN DRIVER ON RIDE.DRIVER_ID = DRIVER.DRIVER_ID
+            JOIN CUSTOMER ON RIDE.CUSTOMER_ID = CUSTOMER.CUSTOMER_ID
+            JOIN DRIVER ON RIDE.DRIVER_ID = DRIVER.DRIVER_ID
         """
 
         # Perform database operations based on view criteria
@@ -384,9 +390,9 @@ def view_all_tables():
         elif view_criteria == 'date':
             query = text(base_query + " WHERE RIDE.DATE_OF_RIDE = :value")
         elif view_criteria == 'customer':
-            query = text(base_query + " WHERE CUSTOMER.USER_ID = :value")
+            query = text(base_query + " WHERE CUSTOMER.CUSTOMER_ID = :value")
         elif view_criteria == 'driver':
-            query = text(base_query + " WHERE DRIVER.USER_ID = :value")
+            query = text(base_query + " WHERE DRIVER.DRIVER_ID = :value")
         else:
             # Handle the default case or do nothing
             pass
@@ -418,9 +424,8 @@ def get_driver_count():
     if request.method == 'POST'or 'GET':
         selected_option = request.form.get('admin_option')
 
-        if selected_option == 'join_query':
-            return redirect(url_for('join_query'))
-        elif selected_option == 'nested_query':
+        
+        if selected_option == 'According to Vehicle Type':
             return redirect(url_for('nested_query'))
         elif selected_option == 'aggregate_query':
             return redirect(url_for('aggregate_query'))
