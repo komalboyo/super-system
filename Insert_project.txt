@@ -1,0 +1,8 @@
+insert into users values ('1','Shivang Gulati','shivangimsg@gmail.com','2345','8724544221','admin'); 
+insert into users values ('2','Komal Mathur','komlixmathur@gmail.com','1234','8527845810','admin'); 
+insert into users values ('3','Prakash Varma','prakash123@gmail.com','2345','8724544221','driver'); 
+insert into users values ('4','Rakesh Singh','raks@gmail.com','8888','6529442699','driver'); 
+insert into users values ('5','Radhika Sahni','radhii70@gmail.com','8888','7321544221','customer'); 
+
+
+insert into driver values ('1', '131', 'UP16CD4334', 4);
