@@ -1,2 +1,2 @@
-# dbms_project
- a ride sharing app
+# Ride Share App 
+ Developed using MySQL and Python Flask
